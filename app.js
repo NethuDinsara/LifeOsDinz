@@ -232,6 +232,9 @@ function renderPillarSummary() {
 // PHASES MODULE
 // ===================================
 
+// Current phase being edited (null for new phase)
+let currentPhaseIndex = null;
+
 /**
  * Render phases
  */
@@ -255,9 +258,15 @@ function renderPhases() {
                 <p class="phase-focus"><strong>Dominant Focus:</strong> ${phase.focus}</p>
             </div>
             <div class="phase-actions">
-                ${phase.status === 'not-started' ? `<button class="btn btn-primary" onclick="updatePhaseStatus('${phase.id}', 'in-progress')">Start Phase</button>` : ''}
-                ${phase.status === 'in-progress' ? `<button class="btn btn-success" onclick="updatePhaseStatus('${phase.id}', 'completed')">Complete Phase</button>` : ''}
-                ${phase.status === 'completed' ? `<button class="btn btn-secondary" onclick="updatePhaseStatus('${phase.id}', 'in-progress')">Reopen Phase</button>` : ''}
+                ${phase.status === 'not-started' ? `<button class="btn btn-primary" onclick="updatePhaseStatus(${index}, 'in-progress')">Start Phase</button>` : ''}
+                ${phase.status === 'in-progress' ? `<button class="btn btn-success" onclick="updatePhaseStatus(${index}, 'completed')">Complete Phase</button>` : ''}
+                ${phase.status === 'completed' ? `<button class="btn btn-secondary" onclick="updatePhaseStatus(${index}, 'in-progress')">Reopen Phase</button>` : ''}
+                <button class="btn btn-outline" onclick="editPhase(${index})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-outline" onclick="deletePhase(${index})" style="color: var(--danger-color); border-color: var(--danger-color);">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
             </div>
         `;
         
@@ -268,13 +277,13 @@ function renderPhases() {
 /**
  * Update phase status
  */
-function updatePhaseStatus(phaseId, newStatus) {
-    const phase = appData.phases.find(p => p.id === phaseId);
+function updatePhaseStatus(index, newStatus) {
+    const phase = appData.phases[index];
     if (phase) {
         // If setting to in-progress, set all others to not in-progress
         if (newStatus === 'in-progress') {
-            appData.phases.forEach(p => {
-                if (p.status === 'in-progress' && p.id !== phaseId) {
+            appData.phases.forEach((p, i) => {
+                if (p.status === 'in-progress' && i !== index) {
                     p.status = 'not-started';
                 }
             });
@@ -288,6 +297,92 @@ function updatePhaseStatus(phaseId, newStatus) {
 }
 
 /**
+ * Show add phase modal
+ */
+function showAddPhaseModal() {
+    currentPhaseIndex = null;
+    document.getElementById('phase-modal-title').textContent = 'Add Phase';
+    document.getElementById('phase-name').value = '';
+    document.getElementById('phase-start').value = '';
+    document.getElementById('phase-end').value = '';
+    document.getElementById('phase-focus').value = '';
+    document.getElementById('phase-modal').classList.add('active');
+}
+
+/**
+ * Edit phase
+ */
+function editPhase(index) {
+    currentPhaseIndex = index;
+    const phase = appData.phases[index];
+    
+    document.getElementById('phase-modal-title').textContent = 'Edit Phase';
+    document.getElementById('phase-name').value = phase.name;
+    document.getElementById('phase-start').value = phase.startDate;
+    document.getElementById('phase-end').value = phase.endDate;
+    document.getElementById('phase-focus').value = phase.focus;
+    document.getElementById('phase-modal').classList.add('active');
+}
+
+/**
+ * Save phase
+ */
+function savePhase() {
+    const name = document.getElementById('phase-name').value.trim();
+    const startDate = document.getElementById('phase-start').value.trim();
+    const endDate = document.getElementById('phase-end').value.trim();
+    const focus = document.getElementById('phase-focus').value.trim();
+    
+    if (!name || !startDate || !endDate || !focus) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    if (currentPhaseIndex === null) {
+        // Add new phase
+        appData.phases.push({
+            id: `phase-${Date.now()}`,
+            name,
+            startDate,
+            endDate,
+            focus,
+            status: 'not-started'
+        });
+    } else {
+        // Update existing phase
+        appData.phases[currentPhaseIndex].name = name;
+        appData.phases[currentPhaseIndex].startDate = startDate;
+        appData.phases[currentPhaseIndex].endDate = endDate;
+        appData.phases[currentPhaseIndex].focus = focus;
+    }
+    
+    saveData();
+    renderPhases();
+    renderDashboard();
+    closePhaseModal();
+}
+
+/**
+ * Delete phase
+ */
+function deletePhase(index) {
+    if (confirm('Are you sure you want to delete this phase? This cannot be undone.')) {
+        appData.phases.splice(index, 1);
+        saveData();
+        renderPhases();
+        renderDashboard();
+    }
+}
+
+/**
+ * Close phase modal
+ */
+function closePhaseModal() {
+    document.getElementById('phase-modal').classList.remove('active');
+    currentPhaseIndex = null;
+}
+
+/**
  * Format status text
  */
 function formatStatus(status) {
@@ -298,6 +393,9 @@ function formatStatus(status) {
 // PILLARS MODULE
 // ===================================
 
+// Current pillar being edited (null for new pillar)
+let currentPillarIndex = null;
+
 /**
  * Render pillars
  */
@@ -305,7 +403,7 @@ function renderPillars() {
     const container = document.getElementById('pillars-container');
     container.innerHTML = '';
     
-    appData.pillars.forEach(pillar => {
+    appData.pillars.forEach((pillar, pillarIndex) => {
         const totalMilestones = pillar.milestones.length;
         const completedMilestones = pillar.milestones.filter(m => m.completed).length;
         const progress = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
@@ -313,8 +411,8 @@ function renderPillars() {
         const pillarCard = document.createElement('div');
         pillarCard.className = 'pillar-card';
         
-        const milestonesHtml = pillar.milestones.map(milestone => `
-            <div class="milestone-item ${milestone.completed ? 'completed' : ''}" onclick="toggleMilestone('${pillar.id}', '${milestone.id}')">
+        const milestonesHtml = pillar.milestones.map((milestone, milestoneIndex) => `
+            <div class="milestone-item ${milestone.completed ? 'completed' : ''}" onclick="toggleMilestone(${pillarIndex}, ${milestoneIndex})">
                 <div class="milestone-checkbox">
                     <i class="fas fa-check"></i>
                 </div>
@@ -325,7 +423,15 @@ function renderPillars() {
         pillarCard.innerHTML = `
             <div class="pillar-header">
                 <h3>${pillar.name}</h3>
-                <span class="pillar-progress-text">${completedMilestones}/${totalMilestones}</span>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span class="pillar-progress-text">${completedMilestones}/${totalMilestones}</span>
+                    <button class="btn-icon" onclick="editPillar(${pillarIndex})" title="Edit Pillar">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon" onclick="deletePillar(${pillarIndex})" title="Delete Pillar" style="color: var(--danger-color);">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             </div>
             <div class="pillar-progress-bar">
                 <div class="pillar-progress-fill" style="width: ${progress}%"></div>
@@ -342,17 +448,118 @@ function renderPillars() {
 /**
  * Toggle milestone completion
  */
-function toggleMilestone(pillarId, milestoneId) {
-    const pillar = appData.pillars.find(p => p.id === pillarId);
-    if (pillar) {
-        const milestone = pillar.milestones.find(m => m.id === milestoneId);
-        if (milestone) {
-            milestone.completed = !milestone.completed;
-            saveData();
-            renderPillars();
-            renderDashboard();
-        }
+function toggleMilestone(pillarIndex, milestoneIndex) {
+    const pillar = appData.pillars[pillarIndex];
+    if (pillar && pillar.milestones[milestoneIndex]) {
+        pillar.milestones[milestoneIndex].completed = !pillar.milestones[milestoneIndex].completed;
+        saveData();
+        renderPillars();
+        renderDashboard();
     }
+}
+
+/**
+ * Show add pillar modal
+ */
+function showAddPillarModal() {
+    currentPillarIndex = null;
+    document.getElementById('pillar-modal-title').textContent = 'Add Pillar';
+    document.getElementById('pillar-name').value = '';
+    document.getElementById('pillar-milestones').value = '';
+    document.getElementById('pillar-modal').classList.add('active');
+}
+
+/**
+ * Edit pillar
+ */
+function editPillar(index) {
+    currentPillarIndex = index;
+    const pillar = appData.pillars[index];
+    
+    document.getElementById('pillar-modal-title').textContent = 'Edit Pillar';
+    document.getElementById('pillar-name').value = pillar.name;
+    
+    // Convert milestones array to text (one per line)
+    const milestonesText = pillar.milestones.map(m => m.label).join('\n');
+    document.getElementById('pillar-milestones').value = milestonesText;
+    
+    document.getElementById('pillar-modal').classList.add('active');
+}
+
+/**
+ * Save pillar
+ */
+function savePillar() {
+    const name = document.getElementById('pillar-name').value.trim();
+    const milestonesText = document.getElementById('pillar-milestones').value.trim();
+    
+    if (!name || !milestonesText) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    // Parse milestones from text
+    const milestones = milestonesText.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+        .map((label, index) => ({
+            id: `milestone-${Date.now()}-${index}`,
+            label,
+            completed: false
+        }));
+    
+    if (milestones.length === 0) {
+        alert('Please add at least one milestone');
+        return;
+    }
+    
+    if (currentPillarIndex === null) {
+        // Add new pillar
+        appData.pillars.push({
+            id: `pillar-${Date.now()}`,
+            name,
+            milestones
+        });
+    } else {
+        // Update existing pillar
+        // Preserve completion status for milestones with same label
+        const oldMilestones = appData.pillars[currentPillarIndex].milestones;
+        const updatedMilestones = milestones.map(newMilestone => {
+            const oldMilestone = oldMilestones.find(m => m.label === newMilestone.label);
+            if (oldMilestone) {
+                newMilestone.completed = oldMilestone.completed;
+            }
+            return newMilestone;
+        });
+        
+        appData.pillars[currentPillarIndex].name = name;
+        appData.pillars[currentPillarIndex].milestones = updatedMilestones;
+    }
+    
+    saveData();
+    renderPillars();
+    renderDashboard();
+    closePillarModal();
+}
+
+/**
+ * Delete pillar
+ */
+function deletePillar(index) {
+    if (confirm('Are you sure you want to delete this pillar and all its milestones? This cannot be undone.')) {
+        appData.pillars.splice(index, 1);
+        saveData();
+        renderPillars();
+        renderDashboard();
+    }
+}
+
+/**
+ * Close pillar modal
+ */
+function closePillarModal() {
+    document.getElementById('pillar-modal').classList.remove('active');
+    currentPillarIndex = null;
 }
 
 // ===================================
@@ -613,6 +820,18 @@ function setupEventListeners() {
     document.getElementById('close-week-detail-modal').addEventListener('click', closeWeekDetailModal);
     document.getElementById('close-week-detail-btn').addEventListener('click', closeWeekDetailModal);
     
+    // Phase modal controls
+    document.getElementById('add-phase-btn').addEventListener('click', showAddPhaseModal);
+    document.getElementById('close-phase-modal').addEventListener('click', closePhaseModal);
+    document.getElementById('cancel-phase-btn').addEventListener('click', closePhaseModal);
+    document.getElementById('save-phase-btn').addEventListener('click', savePhase);
+    
+    // Pillar modal controls
+    document.getElementById('add-pillar-btn').addEventListener('click', showAddPillarModal);
+    document.getElementById('close-pillar-modal').addEventListener('click', closePillarModal);
+    document.getElementById('cancel-pillar-btn').addEventListener('click', closePillarModal);
+    document.getElementById('save-pillar-btn').addEventListener('click', savePillar);
+    
     // Close modals on outside click
     document.getElementById('week-modal').addEventListener('click', (e) => {
         if (e.target.id === 'week-modal') {
@@ -623,6 +842,18 @@ function setupEventListeners() {
     document.getElementById('week-detail-modal').addEventListener('click', (e) => {
         if (e.target.id === 'week-detail-modal') {
             closeWeekDetailModal();
+        }
+    });
+    
+    document.getElementById('phase-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'phase-modal') {
+            closePhaseModal();
+        }
+    });
+    
+    document.getElementById('pillar-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'pillar-modal') {
+            closePillarModal();
         }
     });
 }
