@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeOS Lite - Personal Milestone Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-compass"></i>
+                <h1>LifeOS Lite</h1>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-module="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-module="phases">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Phases</span>
+                </button>
+                <button class="nav-item" data-module="pillars">
+                    <i class="fas fa-columns"></i>
+                    <span>Pillars</span>
+                </button>
+                <button class="nav-item" data-module="weekly">
+                    <i class="fas fa-calendar-week"></i>
+                    <span>Weekly Tracker</span>
+                </button>
+                <button class="nav-item" data-module="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Dashboard Module -->
+            <div id="dashboard" class="module active">
+                <div class="module-header">
+                    <h2>Dashboard Overview</h2>
+                    <p class="subtitle">Your progress at a glance</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Current Phase Card -->
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Current Phase</h3>
+                            <p class="card-value" id="dash-current-phase">Foundation</p>
+                            <p class="card-subtitle" id="dash-phase-dates">Feb 2026 - Sep 2026</p>
+                        </div>
+                    </div>
+
+                    <!-- Dominant Focus Card -->
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Dominant Focus</h3>
+                            <p class="card-value" id="dash-focus">Thesis</p>
+                        </div>
+                    </div>
+
+                    <!-- Pillar Progress Card -->
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Pillar Progress</h3>
+                            <p class="card-value" id="dash-pillar-progress">0%</p>
+                            <div class="mini-progress-bar">
+                                <div class="mini-progress-fill" id="dash-pillar-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Completion Card -->
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>This Week</h3>
+                            <p class="card-value" id="dash-weekly-completion">0%</p>
+                            <p class="card-subtitle">Tasks Completed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar Overview Section -->
+                <div class="section-container">
+                    <h3 class="section-title">Pillar Overview</h3>
+                    <div class="pillar-summary" id="dash-pillar-summary">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phases Module -->
+            <div id="phases" class="module">
+                <div class="module-header">
+                    <h2>Life Phases</h2>
+                    <p class="subtitle">Track your journey through major phases</p>
+                </div>
+
+                <div class="phases-container" id="phases-container">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Pillars Module -->
+            <div id="pillars" class="module">
+                <div class="module-header">
+                    <h2>Development Pillars</h2>
+                    <p class="subtitle">Track milestones across key areas</p>
+                </div>
+
+                <div class="pillars-container" id="pillars-container">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Weekly Tracker Module -->
+            <div id="weekly" class="module">
+                <div class="module-header">
+                    <h2>Weekly Tracker</h2>
+                    <p class="subtitle">Plan and track weekly progress</p>
+                </div>
+
+                <div class="weekly-controls">
+                    <button class="btn btn-primary" id="add-week-btn">
+                        <i class="fas fa-plus"></i> Add Week
+                    </button>
+                </div>
+
+                <div class="weekly-table-container">
+                    <table class="weekly-table" id="weekly-table">
+                        <thead>
+                            <tr>
+                                <th>Week</th>
+                                <th>Dominant Focus</th>
+                                <th>Tasks</th>
+                                <th>Completion</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="weekly-table-body">
+                            <!-- Dynamically populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Module -->
+            <div id="settings" class="module">
+                <div class="module-header">
+                    <h2>Settings</h2>
+                    <p class="subtitle">Customize your LifeOS experience</p>
+                </div>
+
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <h3>Theme Color</h3>
+                        <div class="color-picker-container">
+                            <label>
+                                <input type="radio" name="theme-color" value="blue" checked>
+                                <span class="color-option" style="background: #4A90E2;"></span>
+                                Blue
+                            </label>
+                            <label>
+                                <input type="radio" name="theme-color" value="green">
+                                <span class="color-option" style="background: #50C878;"></span>
+                                Green
+                            </label>
+                            <label>
+                                <input type="radio" name="theme-color" value="purple">
+                                <span class="color-option" style="background: #9B59B6;"></span>
+                                Purple
+                            </label>
+                            <label>
+                                <input type="radio" name="theme-color" value="teal">
+                                <span class="color-option" style="background: #1ABC9C;"></span>
+                                Teal
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Data Management</h3>
+                        <button class="btn btn-danger" id="reset-data-btn">
+                            <i class="fas fa-trash-alt"></i> Reset All Data
+                        </button>
+                        <p class="settings-note">Warning: This will delete all your progress and cannot be undone.</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal for Adding/Editing Week -->
+    <div class="modal" id="week-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="week-modal-title">Add Week</h3>
+                <button class="modal-close" id="close-week-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Week Number</label>
+                    <input type="number" id="week-number" min="1" placeholder="e.g., 1">
+                </div>
+                <div class="form-group">
+                    <label>Dominant Focus</label>
+                    <input type="text" id="week-focus" placeholder="e.g., Thesis, Cloud, Work">
+                </div>
+                <div class="form-group">
+                    <label>Tasks (one per line)</label>
+                    <textarea id="week-tasks" rows="5" placeholder="Complete chapter 1&#10;Review research papers&#10;Setup cloud environment"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-week-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-week-btn">Save Week</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Week Details -->
+    <div class="modal" id="week-detail-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="week-detail-title">Week Details</h3>
+                <button class="modal-close" id="close-week-detail-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="week-detail-content">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="close-week-detail-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
