@@ -120,6 +120,12 @@
                     <p class="subtitle">Track your journey through major phases</p>
                 </div>
 
+                <div class="weekly-controls">
+                    <button class="btn btn-primary" id="add-phase-btn">
+                        <i class="fas fa-plus"></i> Add Phase
+                    </button>
+                </div>
+
                 <div class="phases-container" id="phases-container">
                     <!-- Dynamically populated -->
                 </div>
@@ -130,6 +136,12 @@
                 <div class="module-header">
                     <h2>Development Pillars</h2>
                     <p class="subtitle">Track milestones across key areas</p>
+                </div>
+
+                <div class="weekly-controls">
+                    <button class="btn btn-primary" id="add-pillar-btn">
+                        <i class="fas fa-plus"></i> Add Pillar
+                    </button>
                 </div>
 
                 <div class="pillars-container" id="pillars-container">
@@ -239,6 +251,62 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="cancel-week-btn">Cancel</button>
                 <button class="btn btn-primary" id="save-week-btn">Save Week</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding/Editing Phase -->
+    <div class="modal" id="phase-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="phase-modal-title">Add Phase</h3>
+                <button class="modal-close" id="close-phase-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Phase Name</label>
+                    <input type="text" id="phase-name" placeholder="e.g., Foundation">
+                </div>
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="text" id="phase-start" placeholder="e.g., Feb 2026">
+                </div>
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input type="text" id="phase-end" placeholder="e.g., Sep 2026">
+                </div>
+                <div class="form-group">
+                    <label>Dominant Focus</label>
+                    <input type="text" id="phase-focus" placeholder="e.g., Thesis, Work, Cloud">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-phase-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-phase-btn">Save Phase</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding/Editing Pillar -->
+    <div class="modal" id="pillar-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="pillar-modal-title">Add Pillar</h3>
+                <button class="modal-close" id="close-pillar-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Pillar Name</label>
+                    <input type="text" id="pillar-name" placeholder="e.g., Cloud Foundations">
+                </div>
+                <div class="form-group">
+                    <label>Milestones (one per line)</label>
+                    <textarea id="pillar-milestones" rows="8" placeholder="Complete AWS certification&#10;Build cloud projects&#10;Master Infrastructure as Code"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-pillar-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-pillar-btn">Save Pillar</button>
             </div>
         </div>
     </div>
