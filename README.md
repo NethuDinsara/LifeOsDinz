@@ -13,7 +13,10 @@ A professional, enterprise-style personal milestone tracking system built with v
    - Clean, card-based layout
 
 2. **Phases Management**
-   - Three predefined life phases:
+   - Add unlimited custom phases with dates and focus areas
+   - Edit existing phases (name, dates, focus)
+   - Delete phases with confirmation
+   - Three predefined life phases (customizable):
      - Foundation (Feb 2026 – Sep 2026)
      - Thesis Dominance (Sep 2026 – Apr 2027)
      - Career Acceleration (May 2027 onward)
@@ -22,7 +25,10 @@ A professional, enterprise-style personal milestone tracking system built with v
    - Dominant focus tracking per phase
 
 3. **Development Pillars**
-   - Four key development areas:
+   - Add unlimited custom pillars with milestones
+   - Edit pillar names and milestone lists
+   - Delete pillars with all milestones
+   - Four predefined development areas (customizable):
      - Cloud Foundations (5 milestones)
      - Governance & Security (6 milestones)
      - ML Systems (6 milestones)
@@ -30,6 +36,7 @@ A professional, enterprise-style personal milestone tracking system built with v
    - Interactive milestone checklists
    - Automatic progress calculation
    - Visual progress bars
+   - Preserved completion status when editing milestones
 
 4. **Weekly Tracker**
    - Add and manage weekly tasks
@@ -37,6 +44,7 @@ A professional, enterprise-style personal milestone tracking system built with v
    - Dominant focus per week
    - Detailed task view with interactive checkboxes
    - Color-coded completion badges
+   - Delete weeks as needed
 
 5. **Settings**
    - Theme customization (Blue, Green, Purple, Teal)
@@ -91,21 +99,29 @@ Then open `http://localhost:8000` in your browser.
 
 2. **Managing Phases**
    - Navigate to "Phases" from the sidebar
+   - **Add New Phase**: Click "Add Phase" button to create custom phases
+   - **Edit Phase**: Click "Edit" button on any phase card to modify details
+   - **Delete Phase**: Click "Delete" to remove a phase (with confirmation)
    - Click "Start Phase" to mark a phase as in-progress
    - Only one phase can be in-progress at a time
    - Click "Complete Phase" when finished
 
-3. **Tracking Milestones**
+3. **Tracking Milestones (Pillars)**
    - Navigate to "Pillars" from the sidebar
+   - **Add New Pillar**: Click "Add Pillar" to create a custom development area
+   - **Edit Pillar**: Click the edit icon (pencil) next to pillar name
+   - **Edit Milestones**: When editing a pillar, add/remove/modify milestones (one per line)
+   - **Delete Pillar**: Click the trash icon to remove a pillar and all its milestones
    - Click on any milestone to toggle completion
    - Progress bars update automatically
-   - All changes are saved instantly
+   - Editing preserves completion status for unchanged milestones
 
 4. **Weekly Planning**
    - Navigate to "Weekly Tracker"
    - Click "Add Week" to create a new week
    - Enter week number, focus area, and tasks (one per line)
    - Click the eye icon to view and check off tasks
+   - Click the trash icon to delete a week
    - Tasks can be marked complete in the detail view
 
 5. **Customization**
@@ -159,11 +175,27 @@ Then open `http://localhost:8000` in your browser.
 
 ## 🎨 Customization
 
+### Creating Your Own Goals
+
+**Phases**: Click "Add Phase" to create custom life phases
+- Example: "Language Learning Sprint" (Jan - Mar 2027)
+- Example: "Fitness Transformation" (Apr - Sep 2027)
+
+**Pillars**: Click "Add Pillar" to create custom development areas
+- Example: "Language Skills" with milestones like "Complete Duolingo Spanish", "Read first novel in Spanish"
+- Example: "Health & Fitness" with milestones like "Run 5K under 25 min", "Bench press bodyweight"
+
+**Editing Goals**:
+- Use Edit buttons to modify phase names, dates, or focus areas
+- Edit pillar names and milestone lists (one per line)
+- Completion status is preserved for unchanged milestones
+- Delete with confirmation to prevent accidents
+
 ### Changing Default Data
 
 Edit `app.js` and modify the `defaultData` object to customize:
-- Phase names and dates
-- Pillar names and milestones
+- Default phase names and dates
+- Default pillar names and milestones
 - Default theme
 
 ### Adding More Themes
